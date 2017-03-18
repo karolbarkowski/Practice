@@ -51,6 +51,8 @@
   <ItemGroup>
     <Compile Include="EfTestsContext.cs" />
     <Compile Include="EfTestsContextDescription.cs" />
+    <Compile Include="Log\CustomDbInterceptor.cs" />
+    <Compile Include="Log\LogEntry.cs" />
     <Compile Include="Migrations\201702212339524_initial.cs" />
     <Compile Include="Migrations\201702212339524_initial.Designer.cs">
       <DependentUpon>201702212339524_initial.cs</DependentUpon>
