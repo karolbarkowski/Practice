@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Context.Repositories
 {
+    /// <summary>
+    /// Note about this repo - it assumes that it's used in a disconnected scenarios, like api or mvc controllers where context get disposed quickly
+    /// and there's no need to track entities state. That's why it's using the "AsNoTracking" method for queries. Returned entities will NOT be tracked
+    /// and no state data will be stored or cached.
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
     public class GenericRepository<TEntity> where TEntity : class
     {
         internal DbContext _context;
