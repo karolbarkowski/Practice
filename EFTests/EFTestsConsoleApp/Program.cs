@@ -38,6 +38,19 @@ namespace EFTestsConsoleApp
 
         static void Main(string[] args)
         {
+            //// Inicjalizacja kernela
+            //IKernel ninjectKernel = new StandardKernel();
+            //// Bindowanie
+            //ninjectKernel.Bind<ILogger>().To<ConsoleLogger>();
+
+            //MainApp mainApp = new MainApp(ninjectKernel.Get<ILogger>());
+            //mainApp.Run();
+            //// Czekamy na klawisz
+            //Console.ReadKey();
+
+
+
+
             using (EfTestsContext context = new EfTestsContext())
             {
                 #region Log definition
