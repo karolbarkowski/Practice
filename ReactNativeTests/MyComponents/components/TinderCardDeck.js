@@ -22,6 +22,19 @@ export default class TinderCardDeck extends React.Component {
       });
    }
 
+   getCardStyle() {
+      const position = this.position;
+      const rotate = position.x.interpolate({
+         inputRange: [-500, 0, 500],
+         outputRange: ['-120deg', '0deg', '120deg']
+      });
+
+      return {
+         ...this.position.getLayout(),
+         transform: [{ rotate }]
+      };
+   }
+
    renderCards() {
       return this.props.data.map((item, index) => {
          //wrap the first card inside the animated view with pan responder events attached and the layout connected to animated XY value
@@ -29,7 +42,7 @@ export default class TinderCardDeck extends React.Component {
             return (
                <Animated.View
                   key={index}
-                  style={this.position.getLayout()}
+                  style={this.getCardStyle()}
                   {...this.panResponder.panHandlers}
                >
                   {this.props.renderCard(item)}
