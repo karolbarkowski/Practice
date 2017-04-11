@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Animated, PanResponder } from 'react-native';
+import { View, Animated, PanResponder, Dimensions } from 'react-native';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default class TinderCardDeck extends React.Component {
    constructor(props) {
@@ -13,20 +15,28 @@ export default class TinderCardDeck extends React.Component {
          onStartShouldSetPanResponder: () => true,
 
          //once the responder is handling the gesture, this is the callback function of that gesture, called many times as long as user is dragging
-         onPanResponderMove: (event, gesture) => {
-            _self.position.setValue({ x: gesture.dx, y: gesture.dy });
-         },
+         onPanResponderMove: (event, gesture) => { this.handleResponderMove(gesture); },
 
          //executed when lets go the screen
-         onPanResponderRelease: () => { }
+         onPanResponderRelease: () => { this.resetPosition(); }
       });
+   }
+
+   handleResponderMove(gesture) {
+      this.position.setValue({ x: gesture.dx, y: gesture.dy });
+   }
+
+   resetPosition() {
+      Animated.spring(this.position, {
+         toValue: { x: 0, y: 0 }
+      }).start();
    }
 
    getCardStyle() {
       const position = this.position;
       const rotate = position.x.interpolate({
-         inputRange: [-500, 0, 500],
-         outputRange: ['-120deg', '0deg', '120deg']
+         inputRange: [-SCREEN_WIDTH, 0, SCREEN_WIDTH],
+         outputRange: ['-70deg', '0deg', '70deg']
       });
 
       return {
