@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Dimensions, Animated, PanResponder } from 'react-native';
 
 let _messages = [];
 let _instance = null;
@@ -7,6 +7,22 @@ let _maxMessagesCount = 15;
 
 
 export default class PanelLog extends React.Component {
+   constructor(props) {
+      super(props);
+      const _self = this;
+
+      this.position = new Animated.ValueXY(0, 0);
+
+      this.panResponder = PanResponder.create({
+         onStartShouldSetPanResponder: () => true,
+
+         //once the responder is handling the gesture, this is the callback function of that gesture, called many times as long as user is dragging
+         onPanResponderMove: (event, gesture) => {
+            _self.position.setValue({ x: 0, y: gesture.dy });
+         }
+      });
+   }
+
    componentWillMount() {
       //don't do tihs in constructor as the constructor is not fired during hot reload which causes the panel to lose reference to a component intance
       //doing this in here will overcome this
@@ -30,18 +46,19 @@ export default class PanelLog extends React.Component {
 
    render() {
       return (
-         <View>
-            <View style={styles.container}>
-               <ScrollView ref={ref => this.scrollView = ref}
-                  onContentSizeChange={(contentWidth, contentHeight) => {
-                     this.scrollView.scrollToEnd({ animated: true });
-                  }}>
-                  {_messages.map(function (name, index) {
-                     return <Text style={styles.message} key={index}>{name}</Text>;
-                  })}
-               </ScrollView>
-            </View>
-         </View>
+         <Animated.View
+            style={[styles.container, this.position.getLayout()]}
+            {...this.panResponder.panHandlers}
+         >
+            <ScrollView ref={ref => this.scrollView = ref}
+               onContentSizeChange={(contentWidth, contentHeight) => {
+                  this.scrollView.scrollToEnd({ animated: true });
+               }}>
+               {_messages.map(function (name, index) {
+                  return <Text style={styles.message} key={index}>{name}</Text>;
+               })}
+            </ScrollView>
+         </Animated.View>
       );
    }
 }
@@ -59,7 +76,6 @@ var styles = StyleSheet.create({
    container: {
       width: '100%',
       position: 'absolute',
-      top: 0,
       padding: 5,
       height: Dimensions.get('window').height / 4,
       backgroundColor: 'black',
