@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Animated, PanResponder, Dimensions } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SWIPE_THRESHOLD = 0.25 * SCREEN_WIDTH;
+const SWIPE_OUT_DURATION = 250;
 
 export default class TinderCardDeck extends React.Component {
    constructor(props) {
@@ -18,7 +20,7 @@ export default class TinderCardDeck extends React.Component {
          onPanResponderMove: (event, gesture) => { this.handleResponderMove(gesture); },
 
          //executed when lets go the screen
-         onPanResponderRelease: () => { this.resetPosition(); }
+         onPanResponderRelease: (event, gesture) => { this.checkIfSwipeThresholdReached(gesture); }
       });
    }
 
@@ -26,7 +28,37 @@ export default class TinderCardDeck extends React.Component {
       this.position.setValue({ x: gesture.dx, y: gesture.dy });
    }
 
-   resetPosition() {
+   checkIfSwipeThresholdReached(gesture) {
+      if (gesture.dx > SWIPE_THRESHOLD) {
+         this.swipeOutCardToRight();
+      }
+      else if (gesture.dx < -SWIPE_THRESHOLD) {
+         this.swipeOutCardToLeft();
+      }
+      else {
+         this.resetCardPosition();
+      }
+   }
+
+   swipeOutCardToRight() {
+      Animated.timing(this.position, {
+         toValue: { x: SCREEN_WIDTH, y: 0 },
+         duration: SWIPE_OUT_DURATION
+      }).start();
+   }
+
+   swipeOutCardToLeft() {
+      Animated.timing(this.position, {
+         toValue: { x: -SCREEN_WIDTH, y: 0 },
+         duration: SWIPE_OUT_DURATION
+      }).start();
+   }
+
+   setupNextCardFromDeck() {
+
+   }
+
+   resetCardPosition() {
       Animated.spring(this.position, {
          toValue: { x: 0, y: 0 }
       }).start();
