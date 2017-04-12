@@ -16,9 +16,13 @@ export default class PanelLog extends React.Component {
       this.panResponder = PanResponder.create({
          onStartShouldSetPanResponder: () => true,
 
-         //once the responder is handling the gesture, this is the callback function of that gesture, called many times as long as user is dragging
          onPanResponderMove: (event, gesture) => {
             _self.position.setValue({ x: 0, y: gesture.dy });
+         },
+
+         onPanResponderRelease: (e, gestureState) => {
+            this.position.setOffset({ x: this.currentPanValue.x, y: this.currentPanValue.y });
+            this.position.setValue({ x: 0, y: 0 });
          }
       });
    }
@@ -28,6 +32,17 @@ export default class PanelLog extends React.Component {
       //doing this in here will overcome this
       _instance = this;
       _maxMessagesCount = this.props.maxMessagesCount;
+   }
+
+   componentDidMount() {
+      this.currentPanValue = { x: 0, y: 0 };
+      this.panListener = this.position.addListener((value) => {
+         this.currentPanValue = value;
+      })
+   }
+
+   componentWillUnmount() {
+      this.position.removeListener(this.panListener);
    }
 
    static Log(message) {
