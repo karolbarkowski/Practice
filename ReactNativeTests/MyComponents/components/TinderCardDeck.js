@@ -20,7 +20,7 @@ export default class TinderCardDeck extends React.Component {
          onPanResponderMove: (event, gesture) => { this.handleResponderMove(gesture); },
 
          //executed when lets go the screen
-         onPanResponderRelease: (event, gesture) => { this.checkIfSwipeThresholdReached(gesture); }
+         onPanResponderRelease: (event, gesture) => { this.checkSwipeThresholdAndAnimate(gesture); }
       });
    }
 
@@ -28,34 +28,37 @@ export default class TinderCardDeck extends React.Component {
       this.position.setValue({ x: gesture.dx, y: gesture.dy });
    }
 
-   checkIfSwipeThresholdReached(gesture) {
+   checkSwipeThresholdAndAnimate(gesture) {
       if (gesture.dx > SWIPE_THRESHOLD) {
-         this.swipeOutCardToRight();
+         this.swipeOutCard('right');
       }
       else if (gesture.dx < -SWIPE_THRESHOLD) {
-         this.swipeOutCardToLeft();
+         this.swipeOutCard('left');
       }
       else {
          this.resetCardPosition();
       }
    }
 
-   swipeOutCardToRight() {
+   swipeOutCard(direction) {
       Animated.timing(this.position, {
-         toValue: { x: SCREEN_WIDTH, y: 0 },
+         toValue: { x: direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH, y: 0 },
          duration: SWIPE_OUT_DURATION
-      }).start();
+      }).start(() => {
+         this.onSwipeComplete(direction);
+      });
    }
 
-   swipeOutCardToLeft() {
-      Animated.timing(this.position, {
-         toValue: { x: -SCREEN_WIDTH, y: 0 },
-         duration: SWIPE_OUT_DURATION
-      }).start();
-   }
+   onSwipeComplete(direction) {
+      const { onSwipeLeft, onSwipeRight } = this.props;
 
-   setupNextCardFromDeck() {
-
+      //raise swipe callback
+      if (direction === 'right' && onSwipeRight) {
+         onSwipeRight();
+      }
+      else if (direction === 'left' && onSwipeLeft) {
+         onSwipeLeft();
+      }
    }
 
    resetCardPosition() {
