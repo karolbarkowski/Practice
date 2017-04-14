@@ -12,9 +12,18 @@ export default class PanelLog extends React.Component {
       const _self = this;
 
       this.position = new Animated.ValueXY(0, 0);
+      this.scale = new Animated.Value(1);
 
       this.panResponder = PanResponder.create({
-         onStartShouldSetPanResponder: () => true,
+         onMoveShouldSetResponderCapture: () => true,
+         onMoveShouldSetPanResponderCapture: () => true,
+
+         onPanResponderGrant: (e, gestureState) => {
+            Animated.spring(
+               this.scale,
+               { toValue: 1.1, friction: 6, tension: 300 }
+            ).start();
+         },
 
          onPanResponderMove: (event, gesture) => {
             _self.position.setValue({ x: 0, y: gesture.dy });
@@ -23,6 +32,11 @@ export default class PanelLog extends React.Component {
          onPanResponderRelease: (e, gestureState) => {
             this.position.setOffset({ x: this.currentPanValue.x, y: this.currentPanValue.y });
             this.position.setValue({ x: 0, y: 0 });
+
+            Animated.spring(
+               this.scale,
+               { toValue: 1.0, friction: 6, tension: 300 }
+            ).start();
          }
       });
    }
@@ -64,7 +78,11 @@ export default class PanelLog extends React.Component {
    render() {
       return (
          <Animated.View
-            style={[styles.container, this.position.getLayout()]}
+            style={[
+               styles.container,
+               this.position.getLayout(),
+               { transform: [{ scale: this.scale }] }
+            ]}
             {...this.panResponder.panHandlers}
          >
             <ScrollView ref={ref => this.scrollView = ref}
