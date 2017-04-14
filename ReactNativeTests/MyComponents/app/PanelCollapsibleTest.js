@@ -1,13 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { PanelCollapsible, PanelLog } from './../components/ComponentsIndex';
+import { PanelCollapsible } from './../components/ComponentsIndex';
 
-export default class ComponentsList extends React.Component {
+export default class PanelCollapsibleTest extends React.Component {
    render() {
       return (
          <View style={styles.container}>
-            <PanelLog />
-
             <PanelCollapsible title="My Test Title">
                <Text>My Test Collapsible panel body</Text>
                <Text>My Test Collapsible panel body</Text>

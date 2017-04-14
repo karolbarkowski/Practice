@@ -25,8 +25,6 @@ export default class PanelCollapsible extends React.Component {
    }
 
    toggle() {
-      PanelLog.Log(this.state.expanded ? 'Hiding...' : 'Showing...');
-
       let duration = this.props.duration;
       let easing = 'linear';
       let targetHeight = this.state.expanded ? 0 : this.state.maxBodyHeight;

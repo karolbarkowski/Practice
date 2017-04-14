@@ -46,6 +46,8 @@ export default class PanelLog extends React.Component {
    }
 
    static Log(message) {
+      if (!_instance) return;
+
       _messages.push(message);
 
       if (_messages.length > 12) {

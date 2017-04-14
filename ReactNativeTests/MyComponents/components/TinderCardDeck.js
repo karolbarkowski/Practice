@@ -1,102 +1,123 @@
 import React from 'react';
-import { View, Animated, PanResponder, Dimensions } from 'react-native';
+import { View, Text, Animated, PanResponder, Dimensions, StyleSheet, UIManager, LayoutAnimation } from 'react-native';
+import { Card } from 'react-native-elements';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = 0.25 * SCREEN_WIDTH;
 const SWIPE_OUT_DURATION = 250;
 
 export default class TinderCardDeck extends React.Component {
+   static defaultProps = {
+      onSwipeRight: () => { },
+      onSwipeLeft: () => { },
+      renderNoMoreCards: () => {
+         <Card title="All Done!">
+            <Text style={{ marginBottom: 10 }}>
+               There's no more content here!
+            </Text>
+         </Card>
+      }
+   }
+
    constructor(props) {
       super(props);
-      const _self = this;
 
-      this.position = new Animated.ValueXY();
-
-      this.panResponder = PanResponder.create({
-         //executed anytime user taps on the screen, if true is returned then this inscance of pan responder will handle the tap event
+      const position = new Animated.ValueXY();
+      const panResponder = PanResponder.create({
          onStartShouldSetPanResponder: () => true,
-
-         //once the responder is handling the gesture, this is the callback function of that gesture, called many times as long as user is dragging
-         onPanResponderMove: (event, gesture) => { this.handleResponderMove(gesture); },
-
-         //executed when lets go the screen
-         onPanResponderRelease: (event, gesture) => { this.checkSwipeThresholdAndAnimate(gesture); }
+         onPanResponderMove: (event, gesture) => {
+            position.setValue({ x: gesture.dx, y: gesture.dy });
+         },
+         onPanResponderRelease: (event, gesture) => {
+            if (gesture.dx > SWIPE_THRESHOLD) {
+               this.forceSwipe('right');
+            } else if (gesture.dx < -SWIPE_THRESHOLD) {
+               this.forceSwipe('left');
+            } else {
+               this.resetPosition();
+            }
+         }
       });
+
+      this.state = { panResponder, position, index: 0 };
    }
 
-   handleResponderMove(gesture) {
-      this.position.setValue({ x: gesture.dx, y: gesture.dy });
-   }
-
-   checkSwipeThresholdAndAnimate(gesture) {
-      if (gesture.dx > SWIPE_THRESHOLD) {
-         this.swipeOutCard('right');
-      }
-      else if (gesture.dx < -SWIPE_THRESHOLD) {
-         this.swipeOutCard('left');
-      }
-      else {
-         this.resetCardPosition();
+   componentWillReceiveProps(nextProps) {
+      if (nextProps.data !== this.props.data) {
+         this.setState({ index: 0 });
       }
    }
 
-   swipeOutCard(direction) {
-      Animated.timing(this.position, {
-         toValue: { x: direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH, y: 0 },
+   componentWillUpdate() {
+      UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+      LayoutAnimation.spring();
+   }
+
+   forceSwipe(direction) {
+      const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH;
+      Animated.timing(this.state.position, {
+         toValue: { x, y: 0 },
          duration: SWIPE_OUT_DURATION
-      }).start(() => {
-         this.onSwipeComplete(direction);
-      });
+      }).start(() => this.onSwipeComplete(direction));
    }
 
    onSwipeComplete(direction) {
-      const { onSwipeLeft, onSwipeRight } = this.props;
+      const { onSwipeLeft, onSwipeRight, data } = this.props;
+      const item = data[this.state.index];
 
-      //raise swipe callback
-      if (direction === 'right' && onSwipeRight) {
-         onSwipeRight();
-      }
-      else if (direction === 'left' && onSwipeLeft) {
-         onSwipeLeft();
-      }
+      direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item);
+      this.state.position.setValue({ x: 0, y: 0 });
+      this.setState({ index: this.state.index + 1 });
    }
 
-   resetCardPosition() {
-      Animated.spring(this.position, {
+   resetPosition() {
+      Animated.spring(this.state.position, {
          toValue: { x: 0, y: 0 }
       }).start();
    }
 
    getCardStyle() {
-      const position = this.position;
+      const { position } = this.state;
       const rotate = position.x.interpolate({
-         inputRange: [-SCREEN_WIDTH, 0, SCREEN_WIDTH],
-         outputRange: ['-70deg', '0deg', '70deg']
+         inputRange: [-SCREEN_WIDTH * 1.5, 0, SCREEN_WIDTH * 1.5],
+         outputRange: ['-120deg', '0deg', '120deg']
       });
 
       return {
-         ...this.position.getLayout(),
+         ...position.getLayout(),
          transform: [{ rotate }]
       };
    }
 
    renderCards() {
-      return this.props.data.map((item, index) => {
-         //wrap the first card inside the animated view with pan responder events attached and the layout connected to animated XY value
-         if (index == 0) {
+      if (this.state.index >= this.props.data.length) {
+         return this.props.renderNoMoreCards();
+      }
+
+      return this.props.data.map((item, i) => {
+         if (i < this.state.index) { return null; }
+
+         if (i === this.state.index) {
             return (
                <Animated.View
-                  key={index}
-                  style={this.getCardStyle()}
-                  {...this.panResponder.panHandlers}
+                  key={item.id}
+                  style={[this.getCardStyle(), styles.cardStyle, { zIndex: 99 }]}
+                  {...this.state.panResponder.panHandlers}
                >
                   {this.props.renderCard(item)}
                </Animated.View>
-            )
+            );
          }
 
-         return this.props.renderCard(item);
-      });
+         return (
+            <Animated.View
+               key={item.id}
+               style={[styles.cardStyle, { top: 10 * (i - this.state.index), zIndex: 5 }]}
+            >
+               {this.props.renderCard(item)}
+            </Animated.View>
+         );
+      }).reverse();
    }
 
    render() {
@@ -107,3 +128,10 @@ export default class TinderCardDeck extends React.Component {
       );
    }
 };
+
+const styles = StyleSheet.create({
+   cardStyle: {
+      position: 'absolute',
+      width: SCREEN_WIDTH
+   }
+});

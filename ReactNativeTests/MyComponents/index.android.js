@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { AppRegistry } from 'react-native';
 
-import ComponentsList from './app/ComponentsList';
+//components
+import PanelCollapsibleTest from './app/PanelCollapsibleTest';
+import PanelLogTest from './app/PanelLogTest';
 import TinderCardTest from './app/TinderCardTest';
+
+//animations
 import AnimationBasic from './app/AnimationBasic';
 
 export default class MyComponents extends Component {
   render() {
-    return <TinderCardTest />
+    return <PanelLogTest />
   }
 }
 
