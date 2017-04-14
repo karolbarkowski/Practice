@@ -1,15 +1,15 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView, Dimensions, Animated, PanResponder } from 'react-native';
 
-let _messages = [];
-let _instance = null;
-let _maxMessagesCount = 15;
-
 
 export default class PanelLog extends React.Component {
    constructor(props) {
       super(props);
       const _self = this;
+
+      this.state = {
+         messages: []
+      };
 
       this.position = new Animated.ValueXY(0, 0);
       this.scale = new Animated.Value(1);
@@ -41,11 +41,18 @@ export default class PanelLog extends React.Component {
       });
    }
 
-   componentWillMount() {
-      //don't do tihs in constructor as the constructor is not fired during hot reload which causes the panel to lose reference to a component intance
-      //doing this in here will overcome this
-      _instance = this;
-      _maxMessagesCount = this.props.maxMessagesCount;
+
+   Log(message) {
+      var _messages = this.state.messages.concat([message]);
+      if (_messages.length > this.props.maxMessagesCount) {
+         _messages.shift();
+      }
+
+      this.setState({ messages: _messages });
+   }
+
+   Clear() {
+      this.setState({ messages: [] });
    }
 
    componentDidMount() {
@@ -59,40 +66,36 @@ export default class PanelLog extends React.Component {
       this.position.removeListener(this.panListener);
    }
 
-   static Log(message) {
-      if (!_instance) return;
-
-      _messages.push(message);
-
-      if (_messages.length > 12) {
-         _messages.shift();
-      }
-      _instance.forceUpdate();
-   }
-
-   static Clear() {
-      _messages.clear();
-      _instance.forceUpdate();
-   }
-
    render() {
+      const _self = this;
+
       return (
          <Animated.View
             style={[
                styles.container,
                this.position.getLayout(),
-               { transform: [{ scale: this.scale }] }
+               { transform: [{ scale: this.scale }] },
+               this.props.containerStyle
             ]}
-            {...this.panResponder.panHandlers}
+
          >
-            <ScrollView ref={ref => this.scrollView = ref}
+            <ScrollView
+               style={[styles.list, this.props.listStyle]}
+               ref={ref => this.scrollView = ref}
                onContentSizeChange={(contentWidth, contentHeight) => {
                   this.scrollView.scrollToEnd({ animated: true });
                }}>
-               {_messages.map(function (name, index) {
-                  return <Text style={styles.message} key={index}>{name}</Text>;
+               {this.state.messages.map(function (name, index) {
+                  return <Text style={[styles.message, _self.props.messageStyle]} key={index}>{name}</Text>;
                })}
             </ScrollView>
+            <View
+               style={[
+                  styles.dragger,
+                  this.props.draggerStyle
+               ]}
+               {...this.panResponder.panHandlers}
+            ></View>
          </Animated.View>
       );
    }
@@ -103,19 +106,28 @@ PanelLog.defaultProps = {
 };
 
 PanelLog.propTypes = {
-   position: React.PropTypes.oneOf(['top', 'bottom']),
    maxMessagesCount: React.PropTypes.number
 };
 
 var styles = StyleSheet.create({
    container: {
+      flexDirection: 'row',
       width: '100%',
       position: 'absolute',
-      padding: 5,
       height: Dimensions.get('window').height / 4,
       backgroundColor: 'black',
       zIndex: 10,
       opacity: 0.8
+   },
+   list: {
+      flex: 1,
+      padding: 5
+   },
+   dragger: {
+      width: 40,
+      backgroundColor: '#2D2D2D',
+      borderLeftWidth: 1,
+      borderLeftColor: '#494949'
    },
    message: {
       color: '#00FF00',
