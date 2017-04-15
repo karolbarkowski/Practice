@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Animated, Alert, Dimensions } from 'react-native';
+import { View, StyleSheet, Animated, Alert, Dimensions, StatusBar } from 'react-native';
 import Ball from './../../componentsDev/ball';
 
 let { height, width } = Dimensions.get('window');
@@ -10,7 +10,7 @@ export default class AnimationBasic extends React.Component {
       let _self = this;
 
       Animated.spring(this.position, {
-         toValue: { x: width - ballSize - 50, y: height - ballSize - 50 }
+         toValue: { x: width - ballSize - 50, y: height - StatusBar.currentHeight - ballSize - 50 }
       }).start(() => {
          //callback at the end
          _self.animateUp();

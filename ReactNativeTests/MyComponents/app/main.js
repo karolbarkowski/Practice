@@ -11,6 +11,9 @@ import TinderCardTest from './componentTests/TinderCardTest';
 //animations
 import AnimationBasic from './animationTests/AnimationBasic';
 
+//navigation
+import TabsTest from './navigationTests/TabsTest';
+
 
 export default class Main extends React.Component {
    render() {
@@ -19,7 +22,8 @@ export default class Main extends React.Component {
          PanelCollapsibleTest: { screen: PanelCollapsibleTest },
          PanelLogTest: { screen: PanelLogTest },
          TinderCardTest: { screen: TinderCardTest },
-         AnimationBasic: { screen: AnimationBasic }
+         AnimationBasic: { screen: AnimationBasic },
+         TabsTest: { screen: TabsTest },
       });
 
       return <BasicApp />;

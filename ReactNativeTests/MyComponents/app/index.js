@@ -1,15 +1,6 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Button } from 'react-native-elements';
-
-//components
-import PanelCollapsibleTest from './componentTests/PanelCollapsibleTest';
-import PanelLogTest from './componentTests/PanelLogTest';
-import TinderCardTest from './componentTests/TinderCardTest';
-
-//animations
-import AnimationBasic from './animationTests/AnimationBasic';
-
+import { View, ScrollView, StyleSheet } from 'react-native';
+import { Button, Card } from 'react-native-elements';
 
 export default class Index extends React.Component {
    navigate(module) {
@@ -19,28 +10,49 @@ export default class Index extends React.Component {
 
    render() {
       return (
-         <View style={styles.container}>
-            <Button
-               onPress={() => this.navigate('PanelLogTest')}
-               buttonStyle={styles.button}
-               title="Panel Log"
-            />
-            <Button
-               onPress={() => this.navigate('PanelCollapsibleTest')}
-               buttonStyle={styles.button}
-               title="Panel Collapsible"
-            />
-            <Button
-               onPress={() => this.navigate('TinderCardTest')}
-               buttonStyle={styles.button}
-               title="Panel Tinder Cards"
-            />
-            <Button
-               onPress={() => this.navigate('AnimationBasic')}
-               buttonStyle={styles.button}
-               title="Animation Basic"
-            />
-         </View>
+         <ScrollView style={styles.container}>
+            <Card title="Components">
+               <Button
+                  onPress={() => this.navigate('PanelLogTest')}
+                  buttonStyle={styles.button}
+                  title="Panel Log"
+               />
+               <Button
+                  onPress={() => this.navigate('PanelCollapsibleTest')}
+                  buttonStyle={styles.button}
+                  title="Panel Collapsible"
+               />
+               <Button
+                  onPress={() => this.navigate('TinderCardTest')}
+                  buttonStyle={[styles.button, styles.buttonLast]}
+                  title="Panel Tinder Cards"
+               />
+            </Card>
+            <Card title="Animations">
+               <Button
+                  onPress={() => this.navigate('AnimationBasic')}
+                  buttonStyle={[styles.button, styles.buttonLast]}
+                  title="Animation Basic"
+               />
+            </Card>
+            <Card title="Navigation">
+               <Button
+                  onPress={() => this.navigate('TabsTest')}
+                  buttonStyle={styles.button}
+                  title="Tabs Test"
+               />
+               <Button
+                  onPress={() => this.navigate('TabsTest')}
+                  buttonStyle={styles.button}
+                  title="Modals Test"
+               />
+               <Button
+                  onPress={() => this.navigate('TabsTest')}
+                  buttonStyle={[styles.button, styles.buttonLast]}
+                  title="Nested Navigator"
+               />
+            </Card>
+         </ScrollView>
       );
    }
 };
@@ -52,6 +64,9 @@ const styles = StyleSheet.create({
    },
    button: {
       backgroundColor: "#03A9F4",
-      marginBottom: 30
+      marginBottom: 10
+   },
+   buttonLast: {
+      marginBottom: 0
    }
 });
