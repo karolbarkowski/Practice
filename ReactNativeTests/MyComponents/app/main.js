@@ -17,19 +17,51 @@ import TabsTest from './navigationTests/TabsTest';
 
 export default class Main extends React.Component {
    render() {
-      const BasicApp = StackNavigator({
-         Index: { screen: Index },
-         PanelCollapsibleTest: { screen: PanelCollapsibleTest },
-         PanelLogTest: { screen: PanelLogTest },
-         TinderCardTest: { screen: TinderCardTest },
-         AnimationBasic: { screen: AnimationBasic },
+      const routeConfigs = {
+         Index: {
+            screen: Index,
+            navigationOptions: {
+               headerVisible: false,
+            }
+         },
+         PanelCollapsibleTest: {
+            screen: PanelCollapsibleTest,
+            navigationOptions: {
+               title: 'Collapsible Panel Test',
+               headerVisible: false,
+            }
+         },
+         PanelLogTest: {
+            screen: PanelLogTest,
+            navigationOptions: {
+               title: 'Log Panel Test',
+            }
+         },
+         TinderCardTest: {
+            screen: TinderCardTest,
+            navigationOptions: {
+               title: 'Tinder Cards Test',
+            }
+         },
+         AnimationBasic: {
+            screen: AnimationBasic,
+            navigationOptions: {
+               title: 'Basic Animation',
+            }
+         },
          TabsTest: {
             screen: TabsTest,
             navigationOptions: {
                title: 'Tabbed Layout Test',
             }
          },
-      });
+      };
+
+      const stackNavigatorConfig = {
+         headerMode: 'screen'
+      };
+
+      const BasicApp = StackNavigator(routeConfigs, stackNavigatorConfig);
 
       return <BasicApp />;
    }
