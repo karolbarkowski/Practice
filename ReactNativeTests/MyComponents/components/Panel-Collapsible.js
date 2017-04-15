@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-   StyleSheet,
-   Text,
-   View,
-   TouchableHighlight,
-   TouchableWithoutFeedback
-} from 'react-native';
-import * as Animatable from 'react-native-animatable';
-import { PanelLog } from './ComponentsIndex';
-
+import { StyleSheet, Text, View, TouchableHighlight, TouchableWithoutFeedback, Animated, Easing } from 'react-native';
 
 
 export default class PanelCollapsible extends React.Component {
@@ -16,26 +7,32 @@ export default class PanelCollapsible extends React.Component {
       super(props);
 
       this.state = {
+         title: props.title,
          expanded: true,
          maxBodyHeight: null
       }
+
+      this.height = new Animated.Value(0);
 
       this.toggle = this.toggle.bind(this);
       this.onBodyLayout = this.onBodyLayout.bind(this);
    }
 
    toggle() {
-      let duration = this.props.duration;
-      let easing = 'linear';
       let targetHeight = this.state.expanded ? 0 : this.state.maxBodyHeight;
-      let targetRotation = this.state.expanded ? '0deg' : '180deg';
-
-      this.refs.body.transitionTo({ height: targetHeight }, duration, easing);
-      this.refs.arrow.transitionTo({ transform: [{ rotate: targetRotation }] }, duration, easing);
+      // let targetRotation = this.state.expanded ? '0deg' : '180deg';
 
       this.setState({
          expanded: !this.state.expanded
       });
+
+      // this.height.setValue(initialValue);  //Step 3
+      Animated.timing(
+         this.height,
+         {
+            toValue: targetHeight,
+            duration: 200
+         }).start();  //Step 5
    }
 
    onBodyLayout(event) {
@@ -43,60 +40,41 @@ export default class PanelCollapsible extends React.Component {
          return;
 
       this.setState({
-         maxBodyHeight: event.nativeEvent.layout.height
-      })
+         maxBodyHeight: 100//event.nativeEvent.layout.height
+      });
+      this.height.setValue(event.nativeEvent.layout.height);
    }
-
-   // _handleLayoutChange(event) {
-   //    const contentHeight = event.nativeEvent.layout.height;
-   //    if (this.state.animating || this.props.collapsed || this.state.measuring || this.state.contentHeight === contentHeight) {
-   //       return;
-   //    }
-   //    // this.state.height.setValue(contentHeight);
-   //    // this.setState({ contentHeight });
-
-   //    this.context.log(contentHeight);
-   // };
-
 
    render() {
       return (
          <View style={styles.container}>
             <TouchableWithoutFeedback onPress={this.toggle}>
-               <View style={[styles.bar, { padding: this.props.padding }]}>
+               <View style={styles.bar}>
                   <Text style={styles.title}>{this.props.title}</Text>
 
-                  <Animatable.View ref="arrow" style={[styles.arrow, { transform: [{ rotate: '180deg' }] }]}>
+                  <Animated.View style={[styles.arrow, { transform: [{ rotate: '180deg' }] }]}>
                      <View style={styles.arrowBottom} />
-                  </Animatable.View>
+                  </Animated.View>
                </View>
             </TouchableWithoutFeedback>
 
-            <Animatable.View ref="body" style={[styles.body]} onLayout={this.onBodyLayout}>
-               <View style={[styles.bodyInner, { padding: this.props.padding }]}>
+            <Animated.View style={[styles.body, { height: this.height }]}>
+               <View style={styles.bodyInner} onLayout={this.onBodyLayout}>
                   {this.props.children}
                </View>
-            </Animatable.View>
+            </Animated.View>
          </View>
       );
    }
 }
 
 PanelCollapsible.defaultProps = {
-   padding: 10,
-   duration: 150
+   title: ""
 };
 
 PanelCollapsible.propTypes = {
-   title: React.PropTypes.string,
-   padding: React.PropTypes.number,
-   duration: React.PropTypes.number
+   title: React.PropTypes.string
 };
-
-// PanelCollapsible.contextTypes = {
-//    log: React.PropTypes.func
-// };
-
 
 var styles = StyleSheet.create({
    container: {
@@ -106,12 +84,14 @@ var styles = StyleSheet.create({
    bar: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#c0c0c0'
+      backgroundColor: '#c0c0c0',
+      padding: 10
    },
    body: {
       backgroundColor: '#fff'
    },
    bodyInner: {
+      padding: 10
    },
 
 
