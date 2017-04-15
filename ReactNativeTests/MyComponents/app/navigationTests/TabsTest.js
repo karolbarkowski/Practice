@@ -3,8 +3,8 @@ import { View } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 
-import Tab1 from './Tab1';
-import Tab2 from './Tab2';
+import Tab1 from './testViews/Tab1';
+import Tab2 from './testViews/Tab2';
 
 export default class TabsTest extends React.Component {
    render() {
@@ -24,11 +24,11 @@ export default class TabsTest extends React.Component {
             },
          },
       },
-      // {
-      //    tabBarOptions: {
-      //       activeTintColor: '#e91e63',
-      //    }
-      // }
+         // {
+         //    tabBarOptions: {
+         //       activeTintColor: '#e91e63',
+         //    }
+         // }
       );
 
       return (

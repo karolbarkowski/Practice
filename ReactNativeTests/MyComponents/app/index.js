@@ -42,14 +42,9 @@ export default class Index extends React.Component {
                   title="Tabs Test"
                />
                <Button
-                  onPress={() => this.navigate('TabsTest')}
+                  onPress={() => this.navigate('ModalTest')}
                   buttonStyle={styles.button}
                   title="Modals Test"
-               />
-               <Button
-                  onPress={() => this.navigate('TabsTest')}
-                  buttonStyle={[styles.button, styles.buttonLast]}
-                  title="Nested Navigator"
                />
             </Card>
          </ScrollView>

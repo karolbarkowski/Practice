@@ -13,7 +13,7 @@ import AnimationBasic from './animationTests/AnimationBasic';
 
 //navigation
 import TabsTest from './navigationTests/TabsTest';
-
+import ModalTest from './navigationTests/ModalTest';
 
 export default class Main extends React.Component {
    render() {
@@ -55,6 +55,12 @@ export default class Main extends React.Component {
                title: 'Tabbed Layout Test',
             }
          },
+         ModalTest: {
+            screen: ModalTest,
+            navigationOptions: {
+               title: 'Modal Window Test',
+            }
+         }
       };
 
       const stackNavigatorConfig = {
