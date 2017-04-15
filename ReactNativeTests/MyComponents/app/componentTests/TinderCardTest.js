@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Card, Button } from 'react-native-elements';
 
-import { TinderCardDeck } from './../components/ComponentsIndex';
+import { TinderCardDeck } from './../../components/ComponentsIndex'
 
 const DATA = [
   { id: 1, text: 'Card #1', uri: 'http://imgs.abduzeedo.com/files/paul0v2/unsplash/unsplash-04.jpg' },

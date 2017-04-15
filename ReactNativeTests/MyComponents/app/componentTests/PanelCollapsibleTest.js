@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { PanelCollapsible } from './../components/ComponentsIndex';
+import { PanelCollapsible } from './../../components/ComponentsIndex';
 
 export default class PanelCollapsibleTest extends React.Component {
   render() {

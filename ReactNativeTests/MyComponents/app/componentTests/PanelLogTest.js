@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { PanelLog } from './../components/ComponentsIndex';
+import { PanelLog } from './../../components/ComponentsIndex';
 import { Button } from 'react-native-elements';
 
 export default class PanelLogTest extends React.Component {
@@ -16,7 +16,7 @@ export default class PanelLogTest extends React.Component {
         <Button
           onPress={this.logMessage.bind(this)}
           backgroundColor="#03A9F4"
-          title="Click Me"
+          title="Log Message"
         />
       </View>);
     }

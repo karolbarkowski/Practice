@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Animated, Alert, Dimensions } from 'react-native';
-import Ball from './../componentsDev/ball';
+import Ball from './../../componentsDev/ball';
 
 let { height, width } = Dimensions.get('window');
 let ballSize = 60;
