@@ -23,7 +23,12 @@ export default class Main extends React.Component {
          PanelLogTest: { screen: PanelLogTest },
          TinderCardTest: { screen: TinderCardTest },
          AnimationBasic: { screen: AnimationBasic },
-         TabsTest: { screen: TabsTest },
+         TabsTest: {
+            screen: TabsTest,
+            navigationOptions: {
+               title: 'Tabbed Layout Test',
+            }
+         },
       });
 
       return <BasicApp />;
