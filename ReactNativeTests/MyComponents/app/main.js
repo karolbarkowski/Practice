@@ -21,23 +21,17 @@ export default class Main extends React.Component {
    render() {
       const ModalTestRouter = StackNavigator({
          ModalTest: {
-            screen: ModalTest,
-            navigationOptions: {
-               title: 'Modal Window Test',
-            }
+            screen: ModalTest
          },
          ModalTestPopup: {
-            screen: Modal1,
-            navigationOptions: {
-               title: 'Modal View Title',
-            }
+            screen: Modal1
          }
       }, {
             mode: 'modal',
             headerMode: 'none'
          });
 
-      const TabsTestRouter = TabNavigator({
+      const TabsRouter = TabNavigator({
          Tab1: {
             screen: Tab1
          },
@@ -45,6 +39,20 @@ export default class Main extends React.Component {
             screen: Tab2
          }
       });
+
+      const TabsTestRouter = StackNavigator({
+         TabsRouter: {
+            screen: TabsRouter,
+         },
+         ModalTestPopup: {
+            screen: Modal1,
+         },
+      }, {
+            mode: 'modal',
+            headerMode: 'none',
+         });
+
+
 
       const Root = StackNavigator({
          Index: {
@@ -84,7 +92,10 @@ export default class Main extends React.Component {
             }
          },
          ModalTest: {
-            screen: ModalTestRouter
+            screen: ModalTestRouter,
+            navigationOptions: {
+               title: 'Modal Window Test',
+            }
          }
       });
 
