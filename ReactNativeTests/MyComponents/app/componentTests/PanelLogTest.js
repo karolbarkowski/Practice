@@ -8,27 +8,17 @@ export default class PanelLogTest extends React.Component {
     this.refs.panelLog.Log('Sample message ' + new Date().getTime());
   }
 
-  renderButtons() {
-    let buttons = [];
-
-    for (let i = 0; i < 10; i++) {
-      buttons.push(<View key={i} style={{ marginTop: 20, marginBottom: 20 }}>
-        <Button
-          onPress={this.logMessage.bind(this)}
-          backgroundColor="#03A9F4"
-          title="Log Message"
-        />
-      </View>);
-    }
-    return buttons;
-  }
-
   render() {
     return (
       <View style={styles.container}>
         <PanelLog ref="panelLog" maxMessagesCount={50} />
 
-        {this.renderButtons()}
+        <Button
+          onPress={this.logMessage.bind(this)}
+          buttonStyle={{ marginBottom: 30 }}
+          backgroundColor="#03A9F4"
+          title="Log Message"
+        />
       </View>
     );
   }
@@ -37,6 +27,8 @@ export default class PanelLogTest extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
     backgroundColor: '#F5FCFF'
   }
 });
