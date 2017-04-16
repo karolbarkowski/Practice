@@ -58,7 +58,7 @@ export default class Main extends React.Component {
          Index: {
             screen: Index,
             navigationOptions: {
-               headerVisible: false,
+               title: 'Tests Pages'
             }
          },
          PanelCollapsibleTest: {
