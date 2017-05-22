@@ -1,6 +1,7 @@
 ﻿using Context;
 using Models;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
@@ -28,10 +29,20 @@ namespace EFTestsConsoleApp
 
         private static void CheckInsert(EfTestsContext context)
         {
-            context.ProductCategories.Add(new ProductCategory()
+            var newPC = new ProductCategory()
             {
-                Name = "PC1"
-            });
+                Name = "Category 1"
+            };
+
+            var newProd = new Product()
+            {
+                Name = "Product 1",
+                Price = 100,
+                Categories = new List<ProductCategory>() { newPC }
+            };
+
+            context.Entry(newPC).State = EntityState.Added;
+            context.Entry(newProd).State = EntityState.Added;
 
             context.SaveChanges();
         }
