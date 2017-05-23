@@ -30,8 +30,9 @@
         {
             this.btnRunAndLogQuery = new System.Windows.Forms.Button();
             this.panelLogPreview = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnBenchmarkTime = new System.Windows.Forms.Button();
+            this.btnSelectByRelation = new System.Windows.Forms.Button();
             this.pnlControls = new System.Windows.Forms.Panel();
+            this.btnSelectFromView = new System.Windows.Forms.Button();
             this.lblIterations = new System.Windows.Forms.Label();
             this.numIterations = new System.Windows.Forms.NumericUpDown();
             this.pnlControls.SuspendLayout();
@@ -65,33 +66,46 @@
             this.panelLogPreview.TabIndex = 3;
             this.panelLogPreview.WrapContents = false;
             // 
-            // btnBenchmarkTime
+            // btnSelectByRelation
             // 
-            this.btnBenchmarkTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.btnSelectByRelation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBenchmarkTime.Location = new System.Drawing.Point(0, 41);
-            this.btnBenchmarkTime.Name = "btnBenchmarkTime";
-            this.btnBenchmarkTime.Size = new System.Drawing.Size(138, 23);
-            this.btnBenchmarkTime.TabIndex = 4;
-            this.btnBenchmarkTime.Text = "Benchmark Time";
-            this.btnBenchmarkTime.UseVisualStyleBackColor = true;
-            this.btnBenchmarkTime.Click += new System.EventHandler(this.BtnBenchmarkTime_Click);
+            this.btnSelectByRelation.Location = new System.Drawing.Point(0, 159);
+            this.btnSelectByRelation.Name = "btnSelectByRelation";
+            this.btnSelectByRelation.Size = new System.Drawing.Size(138, 23);
+            this.btnSelectByRelation.TabIndex = 4;
+            this.btnSelectByRelation.Text = "Select By Relation";
+            this.btnSelectByRelation.UseVisualStyleBackColor = true;
+            this.btnSelectByRelation.Click += new System.EventHandler(this.btnSelectByRelation_Click);
             // 
             // pnlControls
             // 
+            this.pnlControls.Controls.Add(this.btnSelectFromView);
             this.pnlControls.Controls.Add(this.lblIterations);
             this.pnlControls.Controls.Add(this.numIterations);
             this.pnlControls.Controls.Add(this.btnRunAndLogQuery);
-            this.pnlControls.Controls.Add(this.btnBenchmarkTime);
+            this.pnlControls.Controls.Add(this.btnSelectByRelation);
             this.pnlControls.Location = new System.Drawing.Point(12, 12);
             this.pnlControls.Name = "pnlControls";
-            this.pnlControls.Size = new System.Drawing.Size(138, 92);
+            this.pnlControls.Size = new System.Drawing.Size(138, 213);
             this.pnlControls.TabIndex = 0;
+            // 
+            // btnSelectFromView
+            // 
+            this.btnSelectFromView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSelectFromView.Location = new System.Drawing.Point(0, 130);
+            this.btnSelectFromView.Name = "btnSelectFromView";
+            this.btnSelectFromView.Size = new System.Drawing.Size(138, 23);
+            this.btnSelectFromView.TabIndex = 5;
+            this.btnSelectFromView.Text = "Select From View";
+            this.btnSelectFromView.UseVisualStyleBackColor = true;
+            this.btnSelectFromView.Click += new System.EventHandler(this.btnSelectFromView_Click);
             // 
             // lblIterations
             // 
             this.lblIterations.AutoSize = true;
-            this.lblIterations.Location = new System.Drawing.Point(3, 72);
+            this.lblIterations.Location = new System.Drawing.Point(3, 190);
             this.lblIterations.Name = "lblIterations";
             this.lblIterations.Size = new System.Drawing.Size(50, 13);
             this.lblIterations.TabIndex = 0;
@@ -100,7 +114,7 @@
             // numIterations
             // 
             this.numIterations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numIterations.Location = new System.Drawing.Point(73, 70);
+            this.numIterations.Location = new System.Drawing.Point(73, 188);
             this.numIterations.Name = "numIterations";
             this.numIterations.Size = new System.Drawing.Size(65, 20);
             this.numIterations.TabIndex = 0;
@@ -130,10 +144,11 @@
         #endregion
         private System.Windows.Forms.Button btnRunAndLogQuery;
         private System.Windows.Forms.FlowLayoutPanel panelLogPreview;
-        private System.Windows.Forms.Button btnBenchmarkTime;
+        private System.Windows.Forms.Button btnSelectByRelation;
         private System.Windows.Forms.Panel pnlControls;
         private System.Windows.Forms.Label lblIterations;
         private System.Windows.Forms.NumericUpDown numIterations;
+        private System.Windows.Forms.Button btnSelectFromView;
     }
 }
 

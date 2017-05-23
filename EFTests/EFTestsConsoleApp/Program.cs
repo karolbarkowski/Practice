@@ -76,7 +76,7 @@ namespace EFTestsConsoleApp
                 ///Trace.Listeners.Add(myWriter);
                 #endregion
 
-                CheckInsert(context);
+                //CheckInsert(context);
                 //CheckLazyEagerLoading(context);
 
 
