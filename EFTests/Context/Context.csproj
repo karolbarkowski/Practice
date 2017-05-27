@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EfTestsViewsContextDescription.cs" />
+    <Compile Include="EfTestsViewsContext.cs" />
     <Compile Include="EfTestsContext.cs" />
     <Compile Include="EfTestsContextDescription.cs" />
     <Compile Include="Log\Clock.cs" />

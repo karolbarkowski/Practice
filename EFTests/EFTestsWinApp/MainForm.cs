@@ -11,6 +11,7 @@ namespace EFTestsWinApp
     public partial class MainForm : Form
     {
         EfTestsContext context;
+        EfTestsViewsContext contextViews;
         CustomDbInterceptor dbInterceptor;
 
         public MainForm()
@@ -19,6 +20,7 @@ namespace EFTestsWinApp
 
             //initialize context and custom query logger
             context = new EfTestsContext();
+            contextViews = new EfTestsViewsContext();
 
             //set custom db interceptor that will take care of logging internally
             dbInterceptor = new CustomDbInterceptor();
@@ -53,7 +55,28 @@ namespace EFTestsWinApp
 
         private void btnSelectFromView_Click(object sender, System.EventArgs e)
         {
+            pnlControls.Enabled = false;
 
+            int iterations = (int)numIterations.Value;
+            int index = 0;
+            DbInterception.Add(dbInterceptor);
+
+            double ms = Clock.BenchmarkTime(() =>
+            {
+                var products = contextViews.ProductDataView.ToList();
+
+                if (index == 0)
+                {
+                    DbInterception.Remove(dbInterceptor);
+                }
+                index++;
+            }, iterations);
+
+            AddLogLabel("Generated query:");
+            AddLogLabel(string.Format("Time elapsed for {0} iterations: {1} ms.", iterations, ms));
+            AddLogLabel("Selected from view results:");
+
+            pnlControls.Enabled = true;
         }
 
         private void btnSelectByRelation_Click(object sender, System.EventArgs e)
