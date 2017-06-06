@@ -3,52 +3,86 @@ import { StyleSheet, Text, View, TouchableHighlight, TouchableWithoutFeedback, A
 
 
 export default class PanelCollapsible extends React.Component {
+   static defaultProps = {
+      title: "",
+      expanded: true
+   }
+
+   static propTypes = {
+      title: React.PropTypes.string,
+      expanded: React.PropTypes.bool
+   }
+
    constructor(props) {
       super(props);
 
       this.state = {
          title: props.title,
-         expanded: true,
-         maxBodyHeight: null
+         expanded: props.expanded,
+         headerHeight: undefined,
+         bodyHeight: undefined
       }
 
-      this.height = new Animated.Value(0);
+      this.height = new Animated.Value(undefined)
 
       this.toggle = this.toggle.bind(this);
+      this.setInitHeight = this.setInitHeight.bind(this);
+      this.onHeaderLayout = this.onHeaderLayout.bind(this);
       this.onBodyLayout = this.onBodyLayout.bind(this);
    }
 
    toggle() {
-      let targetHeight = this.state.expanded ? 0 : this.state.maxBodyHeight;
-      // let targetRotation = this.state.expanded ? '0deg' : '180deg';
+      const { headerHeight, bodyHeight, expanded } = this.state;
+
+      let targetHeight = expanded ? headerHeight : headerHeight + bodyHeight;
+      let targetRotation = expanded ? '0deg' : '180deg';
 
       this.setState({
-         expanded: !this.state.expanded
+         expanded: !expanded
       });
 
-      // this.height.setValue(initialValue);  //Step 3
       Animated.timing(
          this.height,
          {
             toValue: targetHeight,
-            duration: 200
-         }).start();  //Step 5
+            duration: 2000,
+            easing: Easing.inOut(Easing.cubic)
+         }).start();
    }
 
-   onBodyLayout(event) {
-      if (this.state.maxBodyHeight)
+   setInitHeight() {
+      const { headerHeight, bodyHeight, expanded } = this.state;
+
+      if (!headerHeight || !bodyHeight)
+         return;
+
+      const initHeight = expanded ? headerHeight + bodyHeight : headerHeight;
+      this.height.setValue(initHeight)
+      this.forceUpdate();
+   }
+
+   onHeaderLayout(event) {
+      if (this.state.headerHeight)
          return;
 
       this.setState({
-         maxBodyHeight: 100//event.nativeEvent.layout.height
-      });
-      this.height.setValue(event.nativeEvent.layout.height);
+         headerHeight: event.nativeEvent.layout.height
+      }, this.setInitHeight);
+   }
+
+   onBodyLayout(event) {
+      if (this.state.bodyHeight)
+         return;
+
+      this.setState({
+         bodyHeight: event.nativeEvent.layout.height
+      }, this.setInitHeight);
    }
 
    render() {
       return (
-         <View style={styles.container}>
-            <TouchableWithoutFeedback onPress={this.toggle}>
+         <Animated.View style={[styles.container, { height: this.height }]}>
+            <TouchableWithoutFeedback onPress={this.toggle} onLayout={this.onHeaderLayout}>
                <View style={styles.bar}>
                   <Text style={styles.title}>{this.props.title}</Text>
 
@@ -58,27 +92,21 @@ export default class PanelCollapsible extends React.Component {
                </View>
             </TouchableWithoutFeedback>
 
-            <Animated.View style={[styles.body, { height: this.height }]}>
-               <View style={styles.bodyInner} onLayout={this.onBodyLayout}>
-                  {this.props.children}
-               </View>
-            </Animated.View>
-         </View>
+            {/*{this.state.expanded &&*/}
+            <View style={styles.body} onLayout={this.onBodyLayout}>
+               {this.props.children}
+            </View>
+            {/*}*/}
+
+         </Animated.View>
       );
    }
 }
 
-PanelCollapsible.defaultProps = {
-   title: ""
-};
-
-PanelCollapsible.propTypes = {
-   title: React.PropTypes.string
-};
-
 var styles = StyleSheet.create({
    container: {
-      width: '100%'
+      overflow: 'hidden',
+      backgroundColor: 'transparent'
    },
 
    bar: {
@@ -88,9 +116,7 @@ var styles = StyleSheet.create({
       padding: 10
    },
    body: {
-      backgroundColor: '#fff'
-   },
-   bodyInner: {
+      backgroundColor: '#fff',
       padding: 10
    },
 

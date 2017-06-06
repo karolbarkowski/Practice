@@ -6,7 +6,7 @@ export default class PanelCollapsibleTest extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <PanelCollapsible title="My Test Title">
+        <PanelCollapsible title="My Test Title" expanded={false}>
           <Text>My Test Collapsible panel body</Text>
           <Text>My Test Collapsible panel body</Text>
           <Text>My Test Collapsible panel body</Text>

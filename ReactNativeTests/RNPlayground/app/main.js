@@ -17,7 +17,7 @@ export default class Main extends React.Component {
 
             const Root = StackNavigator({
                   Index: {
-                        screen: Index,
+                        screen: PanelCollapsibleTest,
                         navigationOptions: {
                               title: 'Tests Pages'
                         }
