@@ -19,22 +19,26 @@ export default class PanelCollapsible extends React.Component {
       this.state = {
          title: props.title,
          expanded: props.expanded,
-         headerHeight: undefined,
-         bodyHeight: undefined
+         isInitialized: false
       }
 
+      //keep these two outside the state so setting these values won't rerender the view
+      this.bodyHeight = undefined;
+
+      //this could potentially be a part of state as well but my way of doing things is to keep animated values out of state
+      //as they are not directly related with the component state
       this.height = new Animated.Value(undefined)
 
+      //set 'this' bindings
       this.toggle = this.toggle.bind(this);
-      this.setInitHeight = this.setInitHeight.bind(this);
-      this.onHeaderLayout = this.onHeaderLayout.bind(this);
       this.onBodyLayout = this.onBodyLayout.bind(this);
    }
 
    toggle() {
-      const { headerHeight, bodyHeight, expanded } = this.state;
+      console.log('toggle');
+      const { expanded } = this.state;
 
-      let targetHeight = expanded ? headerHeight : headerHeight + bodyHeight;
+      let targetHeight = expanded ? 0 : this.bodyHeight;
       let targetRotation = expanded ? '0deg' : '180deg';
 
       this.setState({
@@ -45,44 +49,31 @@ export default class PanelCollapsible extends React.Component {
          this.height,
          {
             toValue: targetHeight,
-            duration: 2000,
+            duration: 500,
             easing: Easing.inOut(Easing.cubic)
          }).start();
    }
 
-   setInitHeight() {
-      const { headerHeight, bodyHeight, expanded } = this.state;
-
-      if (!headerHeight || !bodyHeight)
-         return;
-
-      const initHeight = expanded ? headerHeight + bodyHeight : headerHeight;
-      this.height.setValue(initHeight)
-      this.forceUpdate();
-   }
-
-   onHeaderLayout(event) {
-      if (this.state.headerHeight)
-         return;
-
-      this.setState({
-         headerHeight: event.nativeEvent.layout.height
-      }, this.setInitHeight);
-   }
-
    onBodyLayout(event) {
-      if (this.state.bodyHeight)
+
+      if (this.bodyHeight)
          return;
 
-      this.setState({
-         bodyHeight: event.nativeEvent.layout.height
-      }, this.setInitHeight);
+      console.log('onBodyLayout');
+      this.bodyHeight = event.nativeEvent.layout.height;
+
+      const { expanded } = this.state;
+      const initHeight = expanded ? event.nativeEvent.layout.height : 0;
+      console.log('Init height is: ', initHeight);
+      this.height.setValue(initHeight)
    }
+
 
    render() {
+      console.log('render with height ', this.height._value);
       return (
-         <Animated.View style={[styles.container, { height: this.height }]}>
-            <TouchableWithoutFeedback onPress={this.toggle} onLayout={this.onHeaderLayout}>
+         <View style={styles.container}>
+            <TouchableWithoutFeedback onPress={this.toggle}>
                <View style={styles.bar}>
                   <Text style={styles.title}>{this.props.title}</Text>
 
@@ -92,21 +83,22 @@ export default class PanelCollapsible extends React.Component {
                </View>
             </TouchableWithoutFeedback>
 
-            {/*{this.state.expanded &&*/}
-            <View style={styles.body} onLayout={this.onBodyLayout}>
+            <View style={[styles.body, { height: this.state.expanded ? this.bodyHeight : 0 }]} >
+               <View onLayout={this.onBodyLayout}>
+                  {this.props.children}
+               </View>
+            </View>
+            <View styler={styles.bodyHidden}>
                {this.props.children}
             </View>
-            {/*}*/}
-
-         </Animated.View>
+         </View>
       );
    }
 }
 
 var styles = StyleSheet.create({
    container: {
-      overflow: 'hidden',
-      backgroundColor: 'transparent'
+      backgroundColor: 'transparent',
    },
 
    bar: {
@@ -116,8 +108,13 @@ var styles = StyleSheet.create({
       padding: 10
    },
    body: {
-      backgroundColor: '#fff',
-      padding: 10
+      backgroundColor: 'red',
+   },
+   bodyHidden: {
+         position: 'absolute',
+      bottom: 0,
+      left: 0,
+      backgroundColor: 'green'
    },
 
 
@@ -128,18 +125,18 @@ var styles = StyleSheet.create({
    },
 
    arrow: {
-      width: 16,
-      height: 24,
-      paddingTop: 6
+      width: 12,
+      height: 20,
+      paddingTop: 7
    },
    arrowBottom: {
       width: 0,
       height: 0,
-      borderTopWidth: 15,
+      borderTopWidth: 10,
       borderTopColor: '#2a2f43',
       borderLeftColor: 'transparent',
-      borderLeftWidth: 8,
+      borderLeftWidth: 6,
       borderRightColor: 'transparent',
-      borderRightWidth: 8
+      borderRightWidth: 6
    }
 });

@@ -1,16 +1,15 @@
-﻿using Context;
-using Models;
+﻿using Products.Context;
+using Products.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Diagnostics;
 using System.Linq;
 
 namespace EFTestsConsoleApp
 {
     class Program
     {
-        private static void CheckLazyEagerLoading(EfTestsContext context)
+        private static void CheckLazyEagerLoading(ProductsContext context)
         {
             Product pDefault = context.Products.Find(1);
             //categories are not set as virtual so no eager loading occurs, we need to load them separately
@@ -27,7 +26,7 @@ namespace EFTestsConsoleApp
             Product pFaster = context.Products.AsNoTracking().First();    
         }
 
-        private static void CheckInsert(EfTestsContext context)
+        private static void CheckInsert(ProductsContext context)
         {
             var newPC = new ProductCategory()
             {
@@ -62,7 +61,7 @@ namespace EFTestsConsoleApp
 
 
 
-            using (EfTestsContext context = new EfTestsContext())
+            using (ProductsContext context = new ProductsContext("EFTests"))
             {
                 #region Log definition
                 //these are some logs we can use out fo the box
@@ -76,7 +75,7 @@ namespace EFTestsConsoleApp
                 ///Trace.Listeners.Add(myWriter);
                 #endregion
 
-                //CheckInsert(context);
+                CheckInsert(context);
                 //CheckLazyEagerLoading(context);
 
 

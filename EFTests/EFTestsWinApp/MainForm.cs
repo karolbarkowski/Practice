@@ -1,17 +1,16 @@
-﻿using Context;
-using Context.Log;
+﻿using Core.Context.Log;
 using EFTestsWinApp.UI;
-using System.Data.Entity.Infrastructure.Interception;
-using System.Windows.Forms;
-using System.Linq;
+using Products.Context;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Interception;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace EFTestsWinApp
 {
     public partial class MainForm : Form
     {
-        EfTestsContext context;
-        EfTestsViewsContext contextViews;
+        ProductsContext context;
         CustomDbInterceptor dbInterceptor;
 
         public MainForm()
@@ -19,8 +18,7 @@ namespace EFTestsWinApp
             InitializeComponent();
 
             //initialize context and custom query logger
-            context = new EfTestsContext();
-            contextViews = new EfTestsViewsContext();
+            context = new ProductsContext("EFTests");
 
             //set custom db interceptor that will take care of logging internally
             dbInterceptor = new CustomDbInterceptor();
@@ -48,11 +46,6 @@ namespace EFTestsWinApp
         }
 
 
-        private void BtnBenchmarkTime_Click(object sender, System.EventArgs e)
-        {
-
-        }
-
         private void btnSelectFromView_Click(object sender, System.EventArgs e)
         {
             pnlControls.Enabled = false;
@@ -63,7 +56,7 @@ namespace EFTestsWinApp
 
             double ms = Clock.BenchmarkTime(() =>
             {
-                var products = contextViews.ProductDataView.ToList();
+                var products = context.ProductDataView.ToList();
 
                 if (index == 0)
                 {
