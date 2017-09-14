@@ -46,6 +46,7 @@ namespace EFTestsConsoleApp
             context.SaveChanges();
         }
 
+
         static void Main(string[] args)
         {
             //// Inicjalizacja kernela
@@ -75,7 +76,11 @@ namespace EFTestsConsoleApp
                 ///Trace.Listeners.Add(myWriter);
                 #endregion
 
-                CheckInsert(context);
+                var p = context.Products.First();
+                p.Name += "X";
+                context.SaveChanges();
+
+                //CheckInsert(context);
                 //CheckLazyEagerLoading(context);
 
 

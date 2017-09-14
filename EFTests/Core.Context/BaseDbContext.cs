@@ -50,24 +50,28 @@ namespace Core.Context
             }
 
 
-            foreach (var history in this.ChangeTracker.Entries()
+            foreach (var entry in this.ChangeTracker.Entries()
                 .Where(e => e.Entity is IAuditLog && e.State == EntityState.Modified)
                 .ToList())
             {
-                var entityName = history.Entity.GetType().Name;
-                var primaryKey = GetPrimaryKeyValue(history);
+                var entityName = entry.Entity.GetType().Name;
+                var primaryKey = GetPrimaryKeyValue(entry);
 
-                foreach (var prop in history.OriginalValues.PropertyNames)
+                foreach (var propName in entry.OriginalValues.PropertyNames)
                 {
-                    var originalValue = history.OriginalValues[prop].ToString();
-                    var currentValue = history.CurrentValues[prop].ToString();
+                    //TODO: make use of "typeof(IModificationHistory).GetMembers()" here
+                    if (propName == "DateCrated" || propName == "DateModified")
+                        continue;
+
+                    var originalValue = entry.OriginalValues[propName] != null ? entry.OriginalValues[propName].ToString() : "";
+                    var currentValue = entry.CurrentValues[propName] != null ? entry.CurrentValues[propName].ToString() : "";
                     if (originalValue != currentValue)
                     {
                         ChangeLog log = new ChangeLog()
                         {
                             EntityName = entityName,
                             PrimaryKeyValue = primaryKey.ToString(),
-                            PropertyName = prop,
+                            PropertyName = propName,
                             OldValue = originalValue,
                             NewValue = currentValue,
                             DateChanged = now

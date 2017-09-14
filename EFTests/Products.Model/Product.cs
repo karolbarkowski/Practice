@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Products.Model
 {
-    public class Product : IModificationHistory
+    public class Product : IModificationHistory, IAuditLog
     {
         public int Id { get; set; }
         public string Name { get; set; }
